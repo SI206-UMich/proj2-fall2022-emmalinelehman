@@ -52,7 +52,7 @@ def get_listing_information(listing_id):
         number of bedrooms
     )
     """
-    pass
+    
 
 
 def get_detailed_listing_database(html_file):

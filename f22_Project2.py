@@ -25,7 +25,33 @@ def get_listings_from_search_results(html_file):
         ('Loft in Mission District', 210, '1944564'),  # example
     ]
     """
-    pass
+    source_dir = os.path.dirname(__file__) 
+    full_path = os.path.join(source_dir, html_file)
+    file = open(full_path,'r')
+    fh = file.read()
+    file.close()
+    soup = BeautifulSoup(fh, 'html.parser')
+
+    title = soup.find_all('div', class_='t1jojoys dir dir-ltr')
+    title_list = [i.text for i in title]
+    cost = soup.find_all('span', class_='_tyxjp1')
+    cost_ = [i.text for i in cost]
+    cost_list = []
+
+    for cost in cost_:
+        cost_list.append(int(cost.strip('$ ')))
+    id = soup.find_all('a', class_='ln2bl2p dir dir-ltr')
+    id_list = []
+    for i in id:
+        link = i.get('href', None)
+        pattern = r'\/(\d+)\?.+'
+        idnum = re.findall(pattern, link)
+        id_list.extend(idnum)
+    listings = []
+    for i in range(len(title_list)):
+        listinginfo = (title_list[i], cost_list[i], id_list[i])
+        listings.append(listinginfo)
+    return listings
 
 
 def get_listing_information(listing_id):
@@ -52,7 +78,61 @@ def get_listing_information(listing_id):
         number of bedrooms
     )
     """
+    base_path = os.path.abspath(os.path.dirname(__file__))
+    fullpath = os.path.join(base_path, 'html_files/listing_'+listing_id+'.html')
+    file = open(fullpath)
+    f = file.read()
+    file.close()
+    soup = BeautifulSoup(f, 'html.parser')
+
+    new_policy=[]
+    end_policy=[]
+
+
+    policy_num= soup.find('li', class_= "f19phm7j dir dir-ltr")
+    policy= policy_num.find('span', class_='ll4r2nl dir dir-ltr')
+    new_policy.append(policy.text)
+
+
+    for policy in new_policy:
+
+        if policy=='pending':
+            end_policy.append("Pending")
+        elif "pending" in policy.lower():
+            new="Pending"
+            end_policy.append(new)
+        elif policy[0]=="L":
+            end_policy.append("Exempt")
+        else:
+            end_policy.append(policy)
+
+    accomodation=[]
+    accomodation_type=soup.find('div', class_="_cv5qq4")
+    lower_accomodation=accomodation_type.text.lower()
+    if "private" in lower_accomodation:
+        accomodation.append("Private Room")
+    elif "shared" in lower_accomodation:
+        accomodation.append("Shared Room")
+    else:
+        accomodation.append("Entire Room")
     
+    num_bedrooms_list=[]
+    # print(accomodation)
+    num_beds=soup.find_all("li", class_="l7n4lsf dir dir-ltr")[1]
+    span=num_beds.find_all('span')[2]
+    for number in span:
+        if number[0]=="S":
+            num_bedrooms_list.append(1)
+        else:
+            num_bedrooms_list.append(int(number[0]))
+    # print(num_bedrooms_list)
+    # print(span)
+
+    for idx in range(len(end_policy)):
+        final_list=((end_policy[idx], accomodation[idx], num_bedrooms_list[idx]))
+    # print(final_list)
+    return final_list
+
 
 
 def get_detailed_listing_database(html_file):

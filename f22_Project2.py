@@ -149,7 +149,17 @@ def get_detailed_listing_database(html_file):
         ...
     ]
     """
-    pass
+    listings = []
+
+
+    listing_info = get_listings_from_search_results(html_file)
+    for x in listing_info:
+        id = x[2]
+        info = get_listing_information(id)
+        listings.append(x+info)
+
+
+    return listings
 
 
 def write_csv(data, filename):
@@ -174,7 +184,16 @@ def write_csv(data, filename):
 
     This function should not return anything.
     """
-    pass
+    with open(filename, 'w') as f:
+        writer = csv.writer(f)
+        header = ['Listing Title', 'Cost', 'Listing ID', 'Policy Number', 'Place Type','Number of Bedrooms']
+
+        writer.writerow(header)
+
+        sorted_dat = sorted(data, key=lambda t: t[1])
+        for information in sorted_dat:
+            writer.writerow(information)
+
 
 
 def check_policy_numbers(data):

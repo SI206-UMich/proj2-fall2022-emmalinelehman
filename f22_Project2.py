@@ -128,8 +128,8 @@ def get_listing_information(listing_id):
     # print(num_bedrooms_list)
     # print(span)
 
-    for idx in range(len(end_policy)):
-        final_list=((end_policy[idx], accomodation[idx], num_bedrooms_list[idx]))
+    for i in range(len(end_policy)):
+        final_list=((end_policy[i], accomodation[i], num_bedrooms_list[i]))
     # print(final_list)
     return final_list
 

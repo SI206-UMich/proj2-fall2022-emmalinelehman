@@ -225,7 +225,7 @@ def check_policy_numbers(data):
 
 def extra_credit(listing_id):
     """
-    There are few exceptions to the requirement of listers obtaining licenses
+    There are few exceptions to the requirement of listers obtang licenses
     before listing their property for short term leases. One specific exception
     is if the lister rents the room for less than 90 days of a year.
 
@@ -237,7 +237,17 @@ def extra_credit(listing_id):
     gone over their 90 day limit, else return True, indicating the lister has
     never gone over their limit.
     """
-    pass
+    with open('html_files/listing_'+listing_id+'_reviews.html', 'r') as f:
+        soup = BeautifulSoup(f, 'html.parser')
+        period = soup.find_all('li', class_='_1f1oir5')
+        rental_period = [i.text.split(" ")[1] for i in period]
+        reviews_count = {}
+        for year in rental_period:
+            reviews_count[year] = reviews_count.get(year, 0) + 1
+        for n in reviews_count.values():
+            if n > 90:
+                return False
+        return True
 
 
 class TestCases(unittest.TestCase):

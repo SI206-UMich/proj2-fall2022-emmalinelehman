@@ -261,11 +261,15 @@ class TestCases(unittest.TestCase):
         # check that the variable you saved after calling the function is a list
         self.assertEqual(type(listings), list)
         # check that each item in the list is a tuple
-
+        
+        #is there an easier way to check the tuple?
+        for te in listings:
+            self.assertEqual(type(te), tuple)
+        
         # check that the first title, cost, and listing id tuple is correct (open the search results html and find it)
-
+        self.assertEqual(listings[0],('Loft in Mission District', 210, '1944564'))
         # check that the last title is correct (open the search results html and find it)
-        pass
+        self.assertEqual(listings[-1][0],"Guest suite in Mission District")
 
     def test_get_listing_information(self):
         html_list = ["1623609",
@@ -350,6 +354,7 @@ class TestCases(unittest.TestCase):
         # check that the first element in the list is '16204265'
         self.assertEqual(invalid_listings[0],'16204265')
 
+#I wasn't sure if I needed to write a test case for the extra credit or not
 
 if __name__ == '__main__':
     database = get_detailed_listing_database("html_files/mission_district_search_results.html")
